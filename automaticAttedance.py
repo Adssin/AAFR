@@ -33,7 +33,30 @@ def subjectChoose(text_to_speech):
             text_to_speech(t)
         else:
             try:
-                recognizer = cv2.face.LBPHFaceRecognizer_create()
+                # Ensure the cv2.face module is available (requires opencv-contrib-python)
+                try:
+                    if hasattr(cv2, "face"):
+                        try:
+                            recognizer = cv2.face.LBPHFaceRecognizer_create()
+                        except AttributeError:
+                            # older/alternate API name
+                            tmp = getattr(cv2.face, "createLBPHFaceRecognizer", None)
+                            if tmp is None:
+                                raise
+                            recognizer = tmp()
+                    else:
+                        raise AttributeError
+                except AttributeError:
+                    e = (
+                        "cv2.face is not available. Install 'opencv-contrib-python' (and remove conflicting opencv packages).\n"
+                        "For example:\n    pip uninstall opencv-python opencv-python-headless\n    pip install opencv-contrib-python"
+                    )
+                    Notifica.configure(
+                        text=e, bg="black", fg="yellow", width=33, font=("times", 15, "bold")
+                    )
+                    Notifica.place(x=20, y=250)
+                    text_to_speech(e)
+                    return
                 try:
                     recognizer.read(trainimagelabel_path)
                 except:

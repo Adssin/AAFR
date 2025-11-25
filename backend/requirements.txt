@@ -4,7 +4,7 @@ pymongo
 deepface
 mtcnn
 numpy
-opencv-python-headless
+opencv-contrib-python-headless==4.8.1.78
 scipy
 python-dotenv
 flask-bcrypt

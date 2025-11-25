@@ -7,6 +7,24 @@
 ### What steps you have to follow??
 - Download or clone my Repository to your device
 - type `pip install -r requirements.txt` in command prompt(this will install required package for project)
+  
+	⚠️ Note about OpenCV and cv2.face
+	- This project uses the face module (cv2.face) which is provided by the "opencv-contrib" builds.
+	- If you get "AttributeError: module 'cv2' has no attribute 'face'", you probably have a non-contrib OpenCV package installed (like opencv-python or opencv-python-headless).
+	- Fix by running:
+		```
+		pip uninstall opencv-python opencv-python-headless
+		pip install opencv-contrib-python
+		You can also quickly verify your environment with the included helper script:
+
+		Windows / PowerShell or cross-platform:
+
+		```powershell
+		python scripts/verify_opencv.py
+		```
+
+		The script prints the installed cv2 version and whether the cv2.face module (and LBPH recognizer) is available.
+		```
 - Create a `TrainingImage` folder in a project folder.
 - open `attendance.py` and `automaticAttendance.py`, change all the path according to your system
 - Run `attandance.py` file

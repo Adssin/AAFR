@@ -9,7 +9,28 @@ from PIL import ImageTk, Image
 
 # Train Image
 def TrainImage(haarcasecade_path, trainimage_path, trainimagelabel_path, message,text_to_speech):
-    recognizer = cv2.face.LBPHFaceRecognizer_create()
+    # Ensure the cv2.face module is available (requires opencv-contrib-python)
+    try:
+        if hasattr(cv2, "face"):
+            try:
+                recognizer = cv2.face.LBPHFaceRecognizer_create()
+            except AttributeError:
+                # older/alternate API name
+                recognizer = getattr(cv2.face, "createLBPHFaceRecognizer", None)
+                if recognizer is None:
+                    raise
+                recognizer = recognizer()
+        else:
+            raise AttributeError
+    except AttributeError:
+        msg = (
+            "cv2.face is not available. Install 'opencv-contrib-python' (and remove conflicting opencv packages).\n"
+            "For example:\n    pip uninstall opencv-python opencv-python-headless\n    pip install opencv-contrib-python"
+        )
+        # show a friendly message via UI hooks
+        message.configure(text=msg)
+        text_to_speech(msg)
+        raise RuntimeError(msg)
     detector = cv2.CascadeClassifier(haarcasecade_path)
     faces, Id = getImagesAndLables(trainimage_path)
     recognizer.train(faces, np.array(Id))
